@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1885AC">
+  <title>UNM Biblioteca</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- define el ícono de la pestaña (favicon) y el acceso directo en el celular -->
+  <link rel="icon" type="image/png" href="logo-b.png">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- carga la fuente lato desde google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- contiene la pantalla de login -->
+  <section id="sec-login" class="login-screen">
+    <video autoplay muted loop playsinline preload="auto" class="video-background" aria-hidden="true">
+      <source src="loop.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="login-container">
+      <img src="logo.png" alt="Logo UNM Biblioteca" class="login-logo">
+      <h2>Bienvenido</h2>
+      <p>Ingresá con tu legajo universitario</p>
+
+      <form id="form-login" class="app-form" autocomplete="on">
+        <input type="text" id="input-usuario" placeholder="Usuario / Legajo" aria-label="Usuario o legajo" autocomplete="username" required>
+        <input type="password" id="input-password" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password" required>
+        <button id="btn-submit" type="button" class="btn-submit">Ingresar</button>
+
+        <button id="btn-invitado" type="button" class="btn-invitado" style="margin-top: 15px; background: transparent; border: 1.5px solid #EA8824; color: #EA8824; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 0.9rem;">Ingresar como invitado</button>
+
+        <p id="msg-error" role="alert" style="color: #ff6b6b; font-size: 0.9rem; display: none; margin-top: 15px; text-align: center;">Usuario o contraseña incorrectos.</p>
+      </form>
+
+      <div style="margin-top: 25px; text-align: center; border-top: 1px solid #e9ecef; padding-top: 15px;">
+        <img src="logo_unm.png" alt="Universidad Nacional de Moreno" loading="lazy" style="max-height: 32px; width: auto; opacity: 0.85;">
+      </div>
+    </div>
+  </section>
+
+  <!-- contiene el contenido principal de la app -->
+  <div id="app-content" class="hidden">
+
+    <!-- header principal -->
+    <header class="main-header">
+      <div class="header-container">
+
+        <div class="header-brand">
+          <a href="index.html" aria-label="Ir al inicio">
+            <img src="logo-b.png" alt="Logo B" class="header-logo logo-chico">
+          </a>
+        </div>
+
+        <nav class="nav-menu" id="nav-menu" aria-label="Navegación principal">
+          <ul class="nav-list">
+
+            <!-- menú 1: recursos -->
+            <li class="nav-item dropdown">
+              <a href="#" class="nav-link">Recursos ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="#" class="dropdown-link nav-link active" data-target="sec-catalogo">Explorar Catálogo</a></li>
+                <li><a href="#" class="dropdown-link nav-link" data-target="sec-donar">Donar Material</a></li>
+                <li><a href="#" class="dropdown-link nav-link" data-target="sec-trabajos">Trabajos de Alumnos</a></li>
+              </ul>
+            </li>
+
+            <!-- menú 2: trámites y autogestión -->
+            <li class="nav-item dropdown">
+              <a href="#" class="nav-link">Trámites y Autogestión ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="#" class="dropdown-link nav-link" data-target="sec-libredeuda">Solicitud de Libre Deuda</a></li>
+                <li><a href="#" class="dropdown-link nav-link" data-target="sec-sugerencia">Sugerencias de Compra</a></li>
+              </ul>
+            </li>
+
+            <!-- menú 3: información institucional -->
+            <li><a href="#" class="nav-link" data-target="sec-foro">Foro de consultas</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <div class="user-dropdown-container">
+            <button type="button" class="user-profile-btn" id="user-menu-btn" aria-label="Menú de usuario" aria-haspopup="true">
+              <div class="avatar-circle">U</div>
+              <span class="chevron">▼</span>
+            </button>
+
+            <ul class="user-dropdown-menu" id="user-dropdown">
+              <li><a href="#" class="dropdown-link" data-target="sec-perfil">Mi Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a href="#" class="dropdown-link" data-target="sec-prestamos">Mis Préstamos Activos</a></li>
+              <li><a href="#" class="dropdown-link" data-target="sec-historial">Historial de Búsqueda</a></li>
+              <li><a href="#" class="dropdown-link" data-target="sec-favoritos">Mis favoritos</a></li>
+              <li><a href="#" id="btn-cerrar-sesion">Cerrar Sesión</a></li>
+            </ul>
+          </div>
+
+          <button type="button" id="hamburger-btn" aria-label="Abrir menú" aria-controls="nav-menu" style="background: #1885AC; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 9999;" onclick="var menu = document.getElementById('nav-menu'); menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';">
+            ☰
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- contenedor de vistas -->
+    <main class="content-container">
+
+      <!-- pestaña 1: catálogo de libros (inicio) -->
+      <section id="sec-catalogo" class="tab-content active">
+        <div class="search-box">
+          <input type="text" id="input-busqueda" placeholder="Buscar por título, autor o tema..." aria-label="Buscar por título, autor o tema">
+
+          <select name="coleccion" id="coleccion-select" class="filtro-busqueda" aria-label="Filtrar por biblioteca">
+            <option value="todas" selected>Todas las bibliotecas</option>
+            <option value="accesible">Biblioteca Accesible</option>
+            <option value="digital">Colección digital</option>
+            <option value="general">Colección general</option>
+            <option value="doctorado">Doctorado en estudios del conurbano</option>
+            <option value="espunm">ESPUNM</option>
+            <option value="hemeroteca">Hemeroteca</option>
+            <option value="lectores">Lectores</option>
+            <option value="programas">Programas de Materias</option>
+            <option value="proyectos">Proyectos de Investigación Científica (PICYDT)</option>
+            <option value="recursos_linea">Recursos en línea</option>
+            <option value="rep_edun">Rep-EDUN</option>
+            <option value="videoteca">Videoteca</option>
+          </select>
+
+          <button type="button" id="btn-buscar">Buscar</button>
+        </div>
+
+        <div id="secciones-inicio" class="contenedor-inicio">
+
+          <!-- 1. BLOQUE EN 2 COLUMNAS (LADO A LADO) -->
+          <div style="display: flex; flex-direction: row; gap: 20px; width: 100%; align-items: stretch; margin-bottom: 20px; box-sizing: border-box;">
+            
+            <!-- Tarjeta Izquierda: Descubrí un libro con su ícono -->
+            <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;">
+              <div style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-bottom: 15px;">
+                <img src="descubri_un_libro.png" alt="Descubrí un libro" style="width: 26px; height: 26px; object-fit: contain;">
+                <h3 style="color: #2c3e50; font-size: 1.1rem; margin: 0; padding: 0; border: none;">DESCUBRÍ UN LIBRO</h3>
+              </div>
+              <div id="libro-azar" class="tarjeta-destacada" style="flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 180px;"></div>
+            </div>
+
+            <!-- Tarjeta Derecha: Proyectos de Alumnos con su ícono -->
+            <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="proyectos.png" alt="Proyectos de Alumnos" style="width: 26px; height: 26px; object-fit: contain;">
+                  <h3 style="color: #2c3e50; font-size: 1.1rem; margin: 0; padding: 0; border: none;">PROYECTOS DE ALUMNOS</h3>
+                </div>
+                <a href="#" class="nav-link-trabajos" data-target="sec-trabajos" style="font-size: 0.8rem; color: #1885AC; font-weight: bold; text-decoration: none;">Ver todos ➔</a>
+              </div>
+              <div id="mini-carrusel-trabajos" class="tarjeta-destacada" style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 15px; min-height: 180px; position: relative;">
+                <!-- El JavaScript inyecta los últimos 5 trabajos acá -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 2. ÚLTIMOS INGRESOS (CON ÍCONO ultimos_ingresos_2.png) -->
+          <div class="seccion-dinamica fondo-carrusel">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+              <img src="ultimos_ingresos.png" alt="Últimos Ingresos" style="width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));">
+              <h3 class="titulo-carrusel" style="margin: 0; padding: 0;">ÚLTIMOS INGRESOS</h3>
+            </div>
+            <div id="carrusel-novedades"></div>
+          </div>
+
+          <!-- 3. EXPLORAR POR TEMAS (CON ÍCONO explorar_por_temas.png) -->
+          <div class="seccion-dinamica" style="margin-top: 40px;">
+            <div style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--color-borde); padding-bottom: 10px; margin-bottom: 20px;">
+              <img src="explorar_por_temas.png" alt="Explorar temas" style="width: 30px; height: 30px; object-fit: contain;">
+              <h3 style="color: #2c3e50; margin: 0; padding: 0; border: none;">EXPLORAR POR TEMAS</h3>
+            </div>
+
+<div class="grilla-temas">
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('derecho')">
+                <img src="tema_derecho.png" alt="Derecho" class="icono-tema-img">
+                <span>Derecho y Ciencias Jurídicas</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('economia')">
+                <img src="tema_economia.png" alt="Economía" class="icono-tema-img">
+                <span>Economía y Administración</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('informatica')">
+                <img src="tema_informatica.png" alt="Informática" class="icono-tema-img">
+                <span>Sistemas e Informática</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('sociedad')">
+                <img src="tema_sociales.png" alt="Sociales" class="icono-tema-img">
+                <span>Ciencias Sociales y Humanidades</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('arquitectura')">
+                <img src="tema_arquitectura.png" alt="Arquitectura" class="icono-tema-img">
+                <span>Arquitectura y Urbanismo</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('diseño')">
+                <img src="tema_diseno.png" alt="Diseño" class="icono-tema-img">
+                <span>Carreras de Diseño</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('ciencia')">
+                <img src="tema_exactas.png" alt="Exactas" class="icono-tema-img">
+                <span>Ciencias Exactas y Naturales</span>
+              </button>
+              <button type="button" class="tarjeta-tema" onclick="buscarPorTema('educacion')">
+                <img src="tema_educacion.png" alt="Educación" class="icono-tema-img">
+                <span>Educación y Trabajo Social</span>
+              </button>
+            </div>
+            <div id="resultados-tema" style="margin-top: 30px;"></div>
+          </div>
+        </div>
+
+        <div id="loading" class="hidden"><p>Buscando en el catálogo...</p></div>
+        <div id="lista-libros" class="cards-list"></div>
+      </section>
+
+      <!-- sección: carreras de diseño (con íconos) -->
+      <section id="sec-trabajos" class="tab-content hidden">
+        <button type="button" class="btn-volver-catalogo" style="margin-bottom: 20px; background: none; border: none; color: #0056b3; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px;">
+          ←
+        </button>
+
+        <h2>Trabajos de Alumnos - Carreras de Diseño</h2>
+        <p style="font-size: 0.9rem; color: #666; margin-top: 4px; margin-bottom: 20px;">Proyectos académicos destacados de las cátedras de Diseño Multimedial, Comunicación Visual, Indumentaria e Industrial.</p>
+
+        <div class="colecciones-grid">
+          <div class="coleccion-card">
+            <div class="coleccion-header-icono">
+              <img src="icono-Multimedial.png" alt="Ícono Diseño Multimedial" class="carrera-icono-img">
+              <h3>Diseño Multimedial</h3>
+            </div>
+            <p>Interfaces interactivas, animación, desarrollo web y experiencias digitales avanzadas.</p>
+            <button type="button" class="btn-coleccion">Ver Proyectos</button>
+          </div>
+
+          <div class="coleccion-card">
+            <div class="coleccion-header-icono">
+              <img src="icono-Visual2.png" alt="Ícono Comunicación Visual" class="carrera-icono-img">
+              <h3>Comunicación Visual</h3>
+            </div>
+            <p>Sistemas marcarios, identidad institucional, señalética y piezas editoriales.</p>
+            <button type="button" class="btn-coleccion">Ver Proyectos</button>
+          </div>
+
+          <div class="coleccion-card">
+            <div class="coleccion-header-icono">
+              <img src="Icono-Indumentaria2.png" alt="Ícono Diseño de Indumentaria" class="carrera-icono-img">
+              <h3>Diseño de Indumentaria</h3>
+            </div>
+            <p>Prototipos textiles, moldería experimental y colecciones con enfoque sustentable.</p>
+            <button type="button" class="btn-coleccion">Ver Proyectos</button>
+          </div>
+
+          <div class="coleccion-card">
+            <div class="coleccion-header-icono">
+              <img src="icono-Industrial.png" alt="Ícono Diseño Industrial" class="carrera-icono-img">
+              <h3>Diseño Industrial</h3>
+            </div>
+            <p>Mobiliario urbano, modelado 3D, objetos ergonómicos y de bajo impacto ambiental.</p>
+            <button type="button" class="btn-coleccion">Ver Proyectos</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- sección: galería y visor de proyectos de carrera -->
+      <section id="sec-trabajos-carrera" class="tab-content hidden">
+        <button type="button" class="btn-volver-trabajos" style="margin-bottom: 20px; background: none; border: none; color: #0056b3; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px;">
+          ← Volver a Carreras
+        </button>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+          <div>
+            <h2 id="titulo-carrera-trabajos" style="margin: 0;">Trabajos Destacados</h2>
+            <p id="subtitulo-carrera-trabajos" style="font-size: 0.9rem; color: #666; margin: 4px 0 0 0;">
+              Producciones académicas seleccionadas de la carrera. Hacé clic en un proyecto para verlo en detalle.
+            </p>
+          </div>
+          <button type="button" id="btn-abrir-subir-trabajo" style="background-color: #EA8824; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+            ➕ Subir mi Proyecto
+          </button>
+        </div>
+
+        <div id="contenedor-proyectos-alumnos" class="trabajos-grid"></div>
+
+        <!-- modal: formulario de subida (fotos, pdf, youtube) -->
+        <div id="modal-subir-trabajo" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: flex; justify-content: center; align-items: center; padding: 15px;">
+          <div style="background: white; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; border-radius: 8px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-bottom: 15px;">
+              <h3 style="margin: 0; color: #1885AC; font-size: 1.2rem;">Cargar Proyecto Académico</h3>
+              <button type="button" id="btn-cerrar-modal-trabajo" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #718096;">&times;</button>
+            </div>
+
+            <form id="form-nuevo-trabajo" class="app-form">
+              <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Título del Proyecto</label>
+              <input type="text" id="nuevo-trabajo-titulo" placeholder="Ej: Rediseño App Biblioteca" required>
+
+              <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568; margin-top: 8px;">Nombre del Alumno</label>
+              <input type="text" id="nuevo-trabajo-alumno" placeholder="Nombre y Apellido" required>
+
+              <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <div style="flex: 1;">
+                  <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Año de Cursada</label>
+                  <input type="number" id="nuevo-trabajo-anio" min="2010" max="2030" value="2026" required>
+                </div>
+                <div style="flex: 1;">
+                  <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Materia / Cátedra</label>
+                  <input type="text" id="nuevo-trabajo-materia" placeholder="Ej: Taller Multimedial II" required>
+                </div>
+              </div>
+
+              <div style="margin-top: 8px;">
+                <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Contacto (Email, Behance o Instagram)</label>
+                <input type="text" id="nuevo-trabajo-contacto" placeholder="ej: estudiante@unm.edu.ar o @usuario" required>
+              </div>
+
+              <div style="margin-top: 8px;">
+                <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Descripción / Memoria del Proyecto</label>
+                <textarea id="nuevo-trabajo-desc" placeholder="Contá brevemente de qué trata tu trabajo, herramientas utilizadas, etc..." style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-family: inherit; font-size: 0.85rem; min-height: 60px; box-sizing: border-box;"></textarea>
+              </div>
+
+              <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568; margin-top: 10px;">Formato de Presentación</label>
+              <select id="nuevo-trabajo-tipo-media" style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 0.9rem;">
+                <option value="imagen">Fotos / Imágenes (Permite seleccionar varias)</option>
+                <option value="pdf">Documento PDF (Lámina o Memoria)</option>
+                <option value="youtube">Video de YouTube</option>
+              </select>
+
+              <div id="bloque-campo-foto" style="margin-top: 10px;">
+                <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Adjuntar una o varias imágenes</label>
+                <input type="file" id="nuevo-trabajo-archivo" accept="image/png, image/jpeg, image/webp" multiple style="margin-top: 4px;">
+                <small style="color: #718096; display: block; margin-top: 4px;">Podés seleccionar más de una imagen a la vez.</small>
+              </div>
+
+              <div id="bloque-campo-pdf" class="hidden" style="margin-top: 10px;">
+                <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Adjuntar Documento PDF</label>
+                <input type="file" id="nuevo-trabajo-pdf" accept="application/pdf" style="margin-top: 4px;">
+                <small style="color: #718096; display: block; margin-top: 4px;">Tamaño sugerido: hasta 4 MB.</small>
+              </div>
+
+              <div id="bloque-campo-youtube" class="hidden" style="margin-top: 10px;">
+                <label style="font-size: 0.85rem; font-weight: bold; color: #4a5568;">Enlace de YouTube</label>
+                <input type="url" id="nuevo-trabajo-url-video" placeholder="https://www.youtube.com/watch?v=...">
+              </div>
+
+              <button type="submit" style="background-color: #1885AC; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 0.95rem;">
+                Publicar Proyecto
+              </button>
+            </form>
+
+          </div>
+        </div>
+
+        <!-- modal: visor ampliado de proyecto con controles de autor -->
+        <div id="modal-visor-trabajo" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10005; display: flex; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+          <div style="background: white; width: 100%; max-width: 850px; max-height: 92vh; border-radius: 10px; overflow-y: auto; padding: 25px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            
+            <button type="button" id="btn-cerrar-visor" style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; color: #4a5568; cursor: pointer; line-height: 1;">&times;</button>
+            
+            <div id="visor-acciones-autor" class="hidden" style="margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #cbd5e0; display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+              <span style="font-size: 0.8rem; color: #718096; margin-right: auto;">Sos el autor de esta publicación</span>
+              <button type="button" id="btn-editar-trabajo" style="background: #1885AC; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer;">
+                ✏️ Editar
+              </button>
+              <button type="button" id="btn-eliminar-trabajo" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer;">
+                🗑️ Eliminar
+              </button>
+            </div>
+
+            <span id="visor-anio-materia" style="background: #e6f4ea; color: #1e8e3e; font-size: 0.8rem; font-weight: bold; padding: 4px 10px; border-radius: 4px;"></span>
+            <h2 id="visor-titulo" style="color: #1a202c; margin: 12px 0 6px 0; font-size: 1.5rem;"></h2>
+            <p id="visor-autor" style="color: #4a5568; font-size: 0.95rem; margin-bottom: 15px;"></p>
+
+            <div id="visor-multimedia-contenedor" style="margin-bottom: 20px;"></div>
+
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 15px;">
+              <h4 style="margin: 0 0 6px 0; color: #2c3e50;">Acerca del trabajo</h4>
+              <p id="visor-descripcion" style="color: #4a5568; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;"></p>
+
+              <div id="visor-bloque-contacto" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <strong style="color: #2c3e50; font-size: 0.85rem; display: block;">Contacto del alumno:</strong>
+                  <span id="visor-contacto-texto" style="color: #1885AC; font-size: 0.9rem; font-weight: bold;"></span>
+                </div>
+                <a id="visor-contacto-btn" href="#" target="_blank" style="background-color: #1885AC; color: white; text-decoration: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; font-size: 0.85rem;">
+                  Contactar al Alumno ✉️
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- sección: foro de consultas -->
+      <section id="sec-foro" class="tab-content hidden">
+        <button type="button" class="btn-volver-perfil btn-volver-catalogo">
+          ←
+        </button>
+
+        <h2 class="prestamos-titulo-seccion">Foro de Consultas</h2>
+        <p style="font-size: 0.85rem; color: #718096; margin: 0 auto 20px auto; max-width: 900px; padding: 0;">
+          Revisá las preguntas frecuentes o dejá tu consulta pública para que el equipo de la biblioteca la responda.
+        </p>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+          <h3 style="color: #333; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Preguntas Frecuentes</h3>
+          <div class="foro-lista" style="margin-bottom: 30px;">
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Cuántos libros puedo retirar a la vez?</h4>
+              <p class="foro-respuesta">Podés retirar hasta 3 libros en simultáneo por un plazo máximo de 14 días.</p>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Cómo renuevo un préstamo si aún no lo terminé de leer?</h4>
+              <p class="foro-respuesta">Podés renovarlo desde la pestaña "Mis Préstamos" hasta 24hs antes de su vencimiento, siempre y cuando no esté reservado por otro estudiante.</p>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Qué pasa si pierdo o daño un libro de la biblioteca?</h4>
+              <p class="foro-respuesta">En caso de pérdida o daño irreparable, el usuario deberá reponer el mismo libro (igual edición o más reciente). Hasta que no se efectúe la reposición, la cuenta quedará suspendida para nuevos préstamos.</p>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Necesito carnet para usar la sala de lectura silenciosa?</h4>
+              <p class="foro-respuesta">No, el acceso a las salas de lectura es libre y gratuito para toda la comunidad. El carnet (o DNI) solo es necesario si deseás llevarte material a domicilio.</p>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Cómo me asocio a la biblioteca para retirar libros?</h4>
+              <p class="foro-respuesta">Si sos estudiante, docente o nodocente de la universidad, ya estás asociado automáticamente. Solo necesitás presentar tu DNI o credencial universitaria (física o digital) en el mostrador para llevarte material.</p>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Tienen libros en formato digital o revistas electrónicas?</h4>
+              <p class="foro-respuesta">Sí, contamos con acceso a bases de datos virtuales y un repositorio digital institucional. Podés explorar todo el catálogo online desde la sección "Colecciones" o solicitando asistencia en el mostrador.</p>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Dónde devuelvo los libros si la biblioteca está cerrada?</h4>
+              <p class="foro-respuesta">Podés utilizar el buzón de devoluciones ubicado en la entrada principal del edificio, que está disponible las 24 horas. Todo el material depositado allí será procesado a primera hora del siguiente día hábil.</p>
+            </div>
+          </div>
+
+          <h3 style="color: #333; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #e9ecef; padding-bottom: 5px;">Consultas de la Comunidad</h3>
+          <div id="contenedor-consultas" style="margin-bottom: 30px;">
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Van a incorporar los libros de la nueva cátedra de Economía? <span class="foro-autor">- María G.</span></h4>
+              <div class="foro-respuesta-biblioteca">
+                <strong>🎓 Biblioteca UNM:</strong> Hola María, ¡sí! Ya realizamos la orden de compra. Estimamos que estarán disponibles en sala a partir del mes que viene.
+              </div>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">Tengo varias revistas de divulgación científica del 2018, ¿les sirven si las llevo? <span class="foro-autor">- Carlos D.</span></h4>
+              <div class="foro-respuesta-biblioteca">
+                <strong>🎓 Biblioteca UNM:</strong> Hola Carlos. Te pedimos que por favor ingreses a la pestaña "Donación de Materiales" y nos envíes la propuesta por ahí. Evaluamos cada caso según la necesidad de la colección antes de recibir el material físico. ¡Gracias por pensar en nosotros!
+              </div>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Hay enchufes disponibles para conectar la notebook en la sala del primer piso? <span class="foro-autor">- Lucía F.</span></h4>
+              <div class="foro-respuesta-biblioteca">
+                <strong>🎓 Biblioteca UNM:</strong> ¡Hola Lucía! Sí, todas las mesas de la sala de lectura silenciosa cuentan con tomacorrientes y acceso a la red Wi-Fi universitaria.
+              </div>
+            </div>
+            <div class="foro-item">
+              <h4 class="foro-pregunta">¿Tienen el libro 'Física Universitaria' de Sears Zemansky? No me sale en el buscador. <span class="foro-autor">- Tomás R.</span></h4>
+              <div class="foro-respuesta-biblioteca">
+                <strong>🎓 Biblioteca UNM:</strong> Hola Tomás. Sí, lo tenemos. Podés encontrarlo en la estantería de Ciencias Exactas con la signatura 530 SEA. Te esperamos!
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #ffffff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+            <h3 style="color: #333; font-size: 1.1rem; margin-top: 0; margin-bottom: 15px;">Hacer una nueva pregunta</h3>
+            <form id="form-foro">
+              <input type="text" id="foro-nombre" placeholder="Tu nombre o alias" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; margin-bottom: 15px; font-size: 0.9rem;">
+              <textarea id="foro-mensaje" placeholder="Escribí tu consulta acá..." required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; margin-bottom: 15px; min-height: 80px; font-family: inherit; font-size: 0.9rem; resize: vertical;"></textarea>
+              <button type="submit" style="background-color: #0056b3; color: white; padding: 10px 20px; font-size: 0.95rem; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;">
+                Publicar consulta
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- sección: detalle del libro de koha con íconos PNG -->
+      <section id="sec-detalle" class="tab-content hidden">
+        <button type="button" class="btn-volver-ficha btn-volver-catalogo" style="margin-bottom: 20px; background: none; border: none; color: #0056b3; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px;">
+          ←
+        </button>
+
+        <div class="detalle-container" style="background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #e9ecef; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          <div class="detalle-top" style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
+            <div style="flex: 0 0 200px;">
+              <img id="detalle-portada" src="" alt="Portada del libro" style="width: 100%; max-width: 200px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); background-color: #f1f5f9;">
+            </div>
+
+            <div class="detalle-info" style="flex: 1; min-width: 250px;">
+              <h2 id="detalle-titulo" style="margin-top: 0; color: #1a202c; font-size: 1.5rem; line-height: 1.2; margin-bottom: 15px;"></h2>
+              <p style="margin: 6px 0; color: #4a5568;"><strong>Autor(es):</strong> <span id="detalle-autor"></span></p>
+              <p style="margin: 6px 0; color: #4a5568;"><strong>Tipo de material:</strong> <span id="detalle-tipo"></span></p>
+              <p style="margin: 6px 0; color: #4a5568;"><strong>Publicación:</strong> <span id="detalle-editorial"></span></p>
+              <p style="margin: 6px 0; color: #4a5568;"><strong>Descripción:</strong> <span id="detalle-descripcion"></span></p>
+            </div>
+
+<div class="detalle-acciones" style="flex: 0 0 240px; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef;">
+              <h3 style="font-size: 1rem; margin: 0 0 15px 0; color: #2c3e50; text-align: center; border-bottom: 2px solid #ddd; padding-bottom: 10px;">Acciones</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button type="button" id="btn-detalle-reservar" class="btn-accion-detalle btn-reserva-activo">
+                  <img src="hacer_reserva.png" alt="Hacer reserva" class="icono-btn-accion" style="filter: brightness(0) invert(1);">
+                  <span>Hacer reserva</span>
+                </button>
+                <button type="button" id="btn-detalle-guardar" class="btn-accion-detalle">
+                  <img src="guardarenlista.png" alt="Guardar en lista" class="icono-btn-accion">
+                  <span>Guardar en lista</span>
+                </button>
+                <button type="button" id="btn-detalle-imprimir" class="btn-accion-detalle">
+                  <img src="imprimir.png" alt="Imprimir" class="icono-btn-accion">
+                  <span>Imprimir</span>
+                </button>
+                <button type="button" id="btn-detalle-compartir" class="btn-accion-detalle">
+                  <img src="compartir.png" alt="Compartir" class="icono-btn-accion">
+                  <span>Compartir</span>
+                </button>
+              </div>
+            </div>
+
+          <div class="detalle-existencias" style="margin-top: 40px;">
+            <h3 style="border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-bottom: 15px; color: #2c3e50;">Existencias</h3>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;">
+                <thead>
+                  <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                    <th scope="col" style="padding: 12px; font-weight: 600; color: #495057;">Sede / Biblioteca</th>
+                    <th scope="col" style="padding: 12px; font-weight: 600; color: #495057;">Colección</th>
+                    <th scope="col" style="padding: 12px; font-weight: 600; color: #495057;">Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="detalle-tabla-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- pestaña: donaciones -->
+      <section id="sec-donar" class="tab-content hidden">
+        <button type="button" class="btn-volver-perfil btn-volver-catalogo">
+          ←
+        </button>
+
+        <h2 class="prestamos-titulo-seccion">Donación de Materiales</h2>
+        <p style="font-size: 0.85rem; color: #718096; margin: 0 auto 20px auto; max-width: 900px; padding: 0;">
+          Completá el formulario para proponer una donación de libros a la biblioteca.
+        </p>
+
+        <form class="app-form" action="donacion.php" method="POST" enctype="multipart/form-data" style="max-width: 900px; margin: 0 auto;">
+          <input type="text" name="titulo" placeholder="Título del libro" aria-label="Título del libro" required>
+          <input type="text" name="autor" placeholder="Autor / Editorial" aria-label="Autor o editorial" required>
+
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="number" name="anio" placeholder="Año (ej. 2018)" aria-label="Año de publicación" min="1000" max="2100" style="flex: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px;" required>
+            <input type="text" name="edicion" placeholder="Edición (ej. 2da)" aria-label="Edición" style="flex: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px;" required>
+          </div>
+
+          <select name="estado" aria-label="Estado del libro" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; margin-bottom: 15px;">
+            <option value="" disabled selected>Seleccionar estado del libro</option>
+            <option value="Nuevo / Excelente">Nuevo / Excelente</option>
+            <option value="Bueno">Bueno</option>
+            <option value="Usado con marcas">Usado con marcas</option>
+          </select>
+
+          <div style="margin-bottom: 20px; padding: 15px; border: 2px dashed #cbd5e0; border-radius: 6px; background: #f8f9fa; text-align: center;">
+            <label for="foto-donacion" style="display: block; font-size: 0.95rem; color: #2c3e50; font-weight: bold; margin-bottom: 8px; cursor: pointer;">
+              📷 Adjuntar foto de la tapa o estado (Opcional)
+            </label>
+            <input type="file" name="foto" id="foto-donacion" accept="image/png, image/jpeg, image/webp" style="width: 100%; font-size: 0.85rem; color: #6c757d; cursor: pointer;">
+          </div>
+
+          <button type="submit" class="btn-donar-propuesta" id="btn-enviar-propuesta" style="width: 100%;">Enviar Propuesta</button>
+        </form>
+      </section>
+
+      <!-- sección: libre deuda -->
+      <section id="sec-libredeuda" class="tab-content hidden">
+        <button type="button" class="btn-volver-perfil btn-volver-catalogo">
+          ←
+        </button>
+
+        <h2 class="prestamos-titulo-seccion">Certificado de Libre Deuda</h2>
+        <p style="font-size: 0.85rem; color: #718096; margin: 0 auto 20px auto; max-width: 900px; padding: 0;">
+          Generá automáticamente el correo para solicitar tu libre deuda a la biblioteca. Necesario para trámites de egreso o renuncias.
+        </p>
+
+        <form id="form-libre-deuda" class="app-form" style="max-width: 900px; margin: 0 auto;">
+          <div style="background: #e6f4ea; border-left: 4px solid #1e8e3e; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
+            <p style="margin: 0; font-size: 0.85rem; color: #1e8e3e;">
+              <strong>¿Cómo funciona?</strong> Completá tus datos y al hacer clic se abrirá tu aplicación de correo con el mensaje listo para enviar.
+            </p>
+          </div>
+
+          <input type="text" id="ld-nombre" placeholder="Nombre y Apellido completo" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; margin-bottom: 15px;">
+          
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="number" id="ld-dni" placeholder="Número de DNI" required style="flex: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px;">
+            
+            <select id="ld-claustro" required style="flex: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px;">
+              <option value="" disabled selected>Vínculo con la UNM</option>
+              <option value="Estudiante">Estudiante / Tesista</option>
+              <option value="Docente">Docente</option>
+              <option value="Nodocente">Nodocente</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-coleccion" style="width: 100%; background-color: #EA8824; color: white; padding: 12px; font-size: 0.95rem;">
+            Generar correo de solicitud
+          </button>
+        </form>
+      </section>
+
+      <!-- sección: sugerencia de compra -->
+      <section id="sec-sugerencia" class="tab-content hidden">
+        <button type="button" class="btn-volver-perfil btn-volver-catalogo">
+          ←
+        </button>
+
+        <h2 class="prestamos-titulo-seccion">Sugerencia de Compra</h2>
+        <p style="font-size: 0.85rem; color: #718096; margin: 0 auto 20px auto; max-width: 900px; padding: 0;">
+          Completá el formulario para proponer la incorporación de nuevo material bibliográfico a la biblioteca.
+        </p>
+
+        <form id="form-sugerencia" class="app-form" style="max-width: 900px; margin: 0 auto;">
+          <input type="text" id="sug-titulo" placeholder="Título del libro o material" aria-label="Título del libro" required>
+          <input type="text" id="sug-autor" placeholder="Autor / Editorial" aria-label="Autor o editorial" required>
+          
+          <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+            <input type="number" id="sug-anio" placeholder="Año de publicación (Opcional)" aria-label="Año" min="1000" max="2100" style="flex: 1; min-width: 140px; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px;">
+            <input type="text" id="sug-isbn" placeholder="ISBN / Edición (Opcional)" aria-label="ISBN o Edición" style="flex: 1; min-width: 140px; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px;">
+          </div>
+
+          <textarea id="sug-motivo" placeholder="¿Por qué sugerís este material? (Ej: Lectura obligatoria para la materia X, actualización de contenidos...)" aria-label="Motivo de la sugerencia" required style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; margin-bottom: 20px; min-height: 90px; font-family: inherit; font-size: 0.9rem; resize: vertical;"></textarea>
+
+          <button type="submit" class="btn-sugerencia-submit" style="width: 100%;">
+            Enviar Sugerencia de Compra
+          </button>
+        </form>
+      </section>
+
+      <!-- sección: préstamos -->
+      <section id="sec-prestamos" class="tab-content hidden">
+        <button type="button" class="btn-volver-perfil btn-volver-catalogo">
+          ←
+        </button>
+        <h2 class="prestamos-titulo-seccion">Mis Préstamos Activos</h2>
+
+        <div id="contenedor-mis-prestamos" class="grilla-prestamos"></div>
+      </section>
+
+      <!-- sección: mi perfil -->
+      <section id="sec-perfil" class="tab-content hidden">
+        <button type="button" id="btn-volver-perfil" class="btn-volver-perfil">
+          ←
+        </button>
+
+        <div class="perfil-card perfil-header-card">
+          <div class="avatar-circle perfil-avatar-grande" id="perfil-avatar-circulo">IN</div>
+          <div class="perfil-header-info">
+            <h2 id="perfil-nombre-completo" class="perfil-nombre">Cargando usuario...</h2>
+            <p class="perfil-rol">Estudiante UNM</p>
+            <span class="perfil-badge">Usuario Habilitado</span>
+          </div>
+        </div>
+
+        <div class="perfil-dashboard">
+          <div class="perfil-col-izq">
+            <div class="perfil-card qr-container">
+              <h3 class="perfil-card-titulo">Carnet Digital</h3>
+              <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=UNM-Estudiante-123456" alt="Código QR Biblioteca">
+              <p class="qr-texto">Presentá este código en el mostrador</p>
+            </div>
+
+            <div class="metricas-grid">
+              <div class="metrica-card">
+                <span class="metrica-numero" id="metrica-prestamos">0</span>
+                <span class="metrica-etiqueta">Préstamos</span>
+              </div>
+              <div class="metrica-card">
+                <span class="metrica-numero" id="metrica-favoritos">0</span>
+                <span class="metrica-etiqueta">Favoritos</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="perfil-col-der">
+            <div class="perfil-card">
+              <h3 class="perfil-card-titulo con-borde">Información Académica</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <p class="info-label">Carrera</p>
+                  <p class="info-valor">Diseño Multimedial</p>
+                </div>
+                <div class="info-item">
+                  <p class="info-label">Legajo</p>
+                  <p class="info-valor">LEG-44589</p>
+                </div>
+                <div class="info-item">
+                  <p class="info-label">Correo Electrónico</p>
+                  <p class="info-valor" id="perfil-correo">-</p>
+                </div>
+                <div class="info-item">
+                  <p class="info-label">Estado de Biblioteca</p>
+                  <p class="info-valor exito">✅ Sin deudas</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="perfil-card">
+              <h3 class="perfil-card-titulo con-borde">Preferencias de Notificación</h3>
+              <div class="pref-flex">
+                <div class="pref-textos">
+                  <p class="pref-titulo">Avisos de Vencimiento</p>
+                  <p class="pref-desc">Recibir alertas 48hs antes de devolver un libro.</p>
+                </div>
+                <div class="toggle-switch" id="toggle-alertas">
+                  <div class="toggle-knob"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- sección: favoritos -->
+      <section id="sec-favoritos" class="tab-content hidden">
+        <button type="button" id="btn-volver-fav" class="btn-volver-catalogo" style="margin-bottom: 20px; background: none; border: none; color: #0056b3; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px;">
+          ←
+        </button>
+        <h2 style="color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-bottom: 20px;">Mis Favoritos</h2>
+        <div id="contenedor-favoritos" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;"></div>
+      </section>
+
+      <!-- sección: historial -->
+      <section id="sec-historial" class="tab-content hidden">
+        <button type="button" class="btn-volver-catalogo" style="margin-bottom: 20px; background: none; border: none; color: #0056b3; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px;">
+          ←
+        </button>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-bottom: 20px;">
+          <h2 style="color: #2c3e50; margin: 0;">Historial de Búsqueda</h2>
+          <button type="button" id="btn-limpiar-historial" style="background: none; border: 1px solid #dc3545; color: #dc3545; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Limpiar historial</button>
+        </div>
+        <ul id="lista-historial" style="list-style: none; margin: 0; padding: 0;"></ul>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- scripts limpios sin parámetros que bloqueen la ruta local -->
+  <script src="app_final.js" defer></script>
+  <script src="koha_final.js" defer></script>
+</body>
+
+<!-- footer persistente -->
+<footer class="main-footer">
+  <div class="footer-container">
+    <div class="footer-col">
+      <img src="logo_unm.png" alt="Logo UNM" class="footer-logo">
+      <p class="footer-sub">Biblioteca y Centro de Documentación<br>Universidad Nacional de Moreno</p>
+      <p>
+        <strong>Dirección:</strong><br>
+        Av. Bartolomé Mitre 1891, Moreno (PBA)
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Sedes y Horarios</h4>
+      <p>
+        <strong>Sala Daract I (Planta Baja):</strong><br>
+        Lunes a viernes de 9 a 21 hs.
+      </p>
+      <p>
+        <strong>Campus Virtual UNM:</strong><br>
+        Lunes a viernes de 10 a 17 hs.
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <p>
+        <strong>Teléfonos:</strong> (0237) 460-9300 / (011) 2078-9170 (Int. 3201)
+      </p>
+      <p>
+        <strong>Correo:</strong> <a href="mailto:biblioteca@unm.edu.ar">biblioteca@unm.edu.ar</a>
+      </p>
+      <p>
+        <strong>Facebook:</strong> <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Biblioteca UNM</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; Biblioteca y Centro de Documentación - Universidad Nacional de Moreno</p>
+  </div>
+</footer>
+</html>

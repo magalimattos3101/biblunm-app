@@ -1,0 +1,20 @@
+{
+  "name": "UNM Biblioteca",
+  "short_name": "BiblioUNM",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f7f6",
+  "theme_color": "#0056b3",
+  "icons": [
+    {
+      "src": "logo-b.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-b.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

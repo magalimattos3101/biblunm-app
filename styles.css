@@ -1,0 +1,2026 @@
+/* =========================================
+   variables globales y reseteo
+   ========================================= */
+:root {
+  /* define los colores que se repiten en todo el sitio */
+  --color-primario: #1885AC;
+  --color-primario-oscuro: #126b8a;
+  --color-texto: #2c3e50;
+  --color-borde: #e9ecef;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: #f4f7f6;
+  color: var(--color-texto);
+  line-height: 1.6;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.active {
+  display: block;
+}
+
+/* =========================================
+   1. pantalla de login
+   ========================================= */
+.login-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh; /* ajusta la altura real en celulares con barra de navegador */
+  overflow: hidden;
+}
+
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(24, 133, 172, 0.5);
+  z-index: 2;
+}
+
+.login-container {
+  position: relative;
+  z-index: 3;
+  width: 90%;
+  max-width: 320px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.login-logo {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 0;
+}
+
+.login-container h2 {
+  color: var(--color-primario);
+  margin-bottom: 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.login-container p {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* --- estilos de los inputs y el formulario --- */
+.app-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-form input {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: 'Lato', sans-serif;
+  width: 100%;
+}
+
+.app-form input:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 2px rgba(24, 133, 172, 0.2);
+}
+
+/* --- botones --- */
+.login-container .btn-submit {
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.login-container .btn-submit:hover {
+  background-color: var(--color-primario-oscuro);
+}
+
+/* fuerza el botón de invitado para que se adapte al diseño compacto */
+#btn-invitado {
+  margin-top: 0 !important;
+  width: 100%;
+  background: transparent !important;
+  border: 1.5px solid #EA8824 !important;
+  color: #EA8824 !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+#btn-invitado:hover {
+  background: rgba(234, 136, 36, 0.1) !important;
+}
+
+.unm-logo-container {
+  margin-top: 15px;
+  padding-top: 10px;
+}
+
+/* =========================================
+   2. header principal y gestión de logos
+   ========================================= */
+.main-header {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  position: sticky;
+  overflow: visible;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  width: 100%;
+  min-width: 0;
+  position: relative;
+  overflow: visible;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  margin: 0 auto;
+}
+
+.header-brand {
+  flex-shrink: 0;
+}
+
+.header-brand a {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo {
+  height: 35px;
+  width: auto;
+}
+
+/* controla los logos (muestra el logo chico en pc y en celular) */
+.logo-chico {
+  display: block !important;
+}
+
+/* =========================================
+   3. menú de navegación (escritorio)
+   ========================================= */
+.nav-menu {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-start; /* alinea a la izquierda, pegado al logo */
+  margin-left: 35px;           /* separa el logo de la primera opción */
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 8px;                    /* reduce el espacio entre ítems para un look compacto */
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #6c757d;              /* usa un gris suave */
+  font-size: 0.85rem;          /* usa una tipografía más chica */
+  font-weight: 400;            /* usa una letra más liviana */
+  padding: 19px 12px;          /* mantiene la altura del header */
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.nav-link:hover {
+  color: var(--color-primario);
+}
+
+/* estado activo */
+.nav-link.active {
+  color: var(--color-primario);
+  font-weight: 700;
+  border-bottom: 3px solid var(--color-primario);
+}
+
+/* menú desplegable original, se mantiene por compatibilidad */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  min-width: 250px;
+  list-style: none;
+  padding: 10px 0;
+  z-index: 200;
+  border-top: 3px solid var(--color-primario);
+}
+
+/* abre el menú con el mouse y también con el teclado (tab) */
+.nav-item:hover .dropdown-menu,
+.nav-item:focus-within .dropdown-menu {
+  display: block;
+}
+
+.dropdown-link {
+  display: block;
+  padding: 10px 20px;
+  color: #4a5568;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.dropdown-link:hover {
+  background: #f1f5f9;
+  color: var(--color-primario);
+}
+
+.dropdown-divider {
+  border: 0;
+  height: 1px;
+  background: var(--color-borde);
+  margin: 8px 0;
+}
+
+/* =========================================
+   4. acciones de usuario y botón hamburguesa
+   ========================================= */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  flex-shrink: 0;
+  min-width: fit-content;
+  overflow: visible;
+  z-index: 2;
+}
+
+.user-dropdown-container {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  overflow: visible;
+  z-index: 3;
+}
+
+.user-profile-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 20px;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.user-profile-btn:hover {
+  background-color: #f1f5f9;
+}
+
+.avatar-circle {
+  background-color: #ced5d8;
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.chevron {
+  font-size: 0.8rem;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.user-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+  min-width: 200px;
+  max-width: calc(100vw - 20px);
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  border: 1px solid var(--color-borde);
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  z-index: 1030;
+  overflow: hidden;
+}
+
+.user-dropdown-menu.show {
+  display: block;
+}
+
+.user-dropdown-menu li a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: var(--color-texto);
+  font-size: 0.95rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.user-dropdown-menu li a:hover {
+  background-color: #f8f9fa;
+  color: var(--color-primario);
+}
+
+#hamburger-btn {
+  display: none;
+}
+
+/* =========================================
+   5. contenedor y buscador
+   ========================================= */
+.content-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.search-box {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.search-box input {
+  flex: 2;
+  padding: 12px 20px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.search-box select {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f8f9fa;
+}
+
+.search-box button {
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 0 30px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.search-box button:hover {
+  background: var(--color-primario-oscuro);
+}
+
+/* =========================================
+   6. secciones de inicio y colecciones
+   ========================================= */
+.contenedor-inicio {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.seccion-dinamica h3 {
+  color: var(--color-texto);
+  font-size: 1.1rem;
+  border-bottom: 2px solid var(--color-borde);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.tarjeta-destacada {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid var(--color-borde);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.grilla-novedades {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.tarjeta-novedad {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--color-borde);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.tarjeta-novedad:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   carrusel y libro al azar - estilos
+   ========================================= */
+
+/* define la animación de carga (ruedita giratoria) */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-carga {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--color-primario);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.contenedor-carga {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  color: var(--color-primario);
+  font-weight: 500;
+}
+
+/* =========================================
+   cargador blanco (para fondos oscuros)
+   ========================================= */
+.contenedor-carga-blanco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  color: #ffffff; /* usa texto blanco */
+  font-weight: 500;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.spinner-carga-blanco {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ffffff !important; /* usa una ruedita blanca */
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite; /* corrige la animación, antes apuntaba a una inexistente (girar-ruedita) */
+}
+
+/* define la pista del carrusel (deslizamiento suave y scrollbar oculta) */
+#track-carrusel {
+  scroll-behavior: smooth;   /* produce el efecto de deslizamiento */
+  -ms-overflow-style: none;  /* oculta la barra en ie y edge */
+  scrollbar-width: none;     /* oculta la barra en firefox */
+}
+
+#track-carrusel::-webkit-scrollbar {
+  display: none; /* oculta la barra en chrome, safari y opera */
+}
+
+/* define los botones del carrusel y el efecto hover */
+.btn-carrusel {
+  position: absolute;
+  z-index: 10;
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+}
+
+.btn-carrusel:hover {
+  background: #126380;
+  transform: scale(1.1);
+}
+
+.btn-prev { left: -15px; }
+.btn-next { right: -15px; }
+
+.colecciones-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.coleccion-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Empuja el botón al fondo */
+}
+
+.coleccion-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  color: #333333;
+}
+
+.coleccion-card p {
+  margin: 0 0 15px 0;
+  font-size: 0.85rem;
+  color: #718096;
+  line-height: 1.4;
+  flex-grow: 1; /* Hace que el texto ocupe el espacio sobrante */
+}
+
+.btn-coleccion {
+  background-color: #126380;
+  color: white;
+  border: 1px solid #126380;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%; /* Ocupa todo el ancho de la tarjeta */
+}
+
+.btn-coleccion:hover {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+/* =========================================
+   fondo del carrusel y efectos
+   ========================================= */
+
+/* contiene la imagen de fondo con el filtro celeste */
+.fondo-carrusel {
+  /* aplica una capa celeste (de 20% a 80% de opacidad) sobre la foto */
+  background: linear-gradient(rgba(24, 133, 172, 0.2), rgba(24, 133, 172, 0.8)), url('background-ingresos.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* pone el título en blanco para que resalte sobre el fondo */
+.titulo-carrusel {
+  color: #ffffff !important;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 20px;
+}
+
+/* vuelve translúcida la tarjeta de los libros */
+.tarjeta-libro {
+  flex: 0 0 150px;
+  /* usa un fondo blanco al 85% de opacidad */
+  background: rgba(255, 255, 255, 0.85) !important;
+  /* aplica el efecto de vidrio esmerilado */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================
+   explorar por temas - estilos
+   ========================================= */
+.grilla-temas {
+  display: flex;
+  flex-wrap: nowrap;         /* evita que las tarjetas salten de línea */
+  gap: 10px;                 /* mantiene poco espacio entre tarjetas */
+  justify-content: space-between;
+  overflow-x: auto;          /* permite deslizar con el dedo en pantallas chicas */
+  padding-bottom: 10px;      /* deja espacio para la barra de scroll */
+
+  /* oculta la barra de scroll en navegadores modernos pero mantiene la función */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.grilla-temas::-webkit-scrollbar {
+  display: none;
+}
+
+.tarjeta-tema {
+  flex: 1;                   /* reparte el espacio por igual entre las tarjetas */
+  min-width: 105px;          /* evita que se aplasten a menos de este tamaño */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  padding: 15px 5px;         /* ajusta el relleno para que entre bien el texto */
+  cursor: pointer;
+  color: var(--color-texto);
+  font-weight: 600;
+  font-size: 0.8rem;         /* usa una letra chica para que textos largos entren bien */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.tarjeta-tema .icono-tema {
+  font-size: 2rem;           /* usa un icono chico para ganar espacio */
+  margin-bottom: 8px;
+  transition: transform 0.3s;
+}
+
+/* aplica el efecto hover (al pasar el mouse) */
+.tarjeta-tema:hover {
+  background: var(--color-primario);
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(24, 133, 172, 0.2);
+}
+
+.tarjeta-tema:hover .icono-tema {
+  transform: scale(1.1);
+}
+
+/* =========================================
+   DASHBOARD DEL PERFIL DEL USUARIO
+========================================= */
+
+.perfil-dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Espacio entre columnas reducido */
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.perfil-col-izq {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre tarjetas reducido */
+}
+
+.perfil-col-der {
+  flex: 2 1 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre tarjetas reducido */
+}
+
+/* Tarjetas Generales (Paddings más chicos) */
+.perfil-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 15px; /* Reducido de 20px */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e9ecef;
+}
+
+.perfil-card-titulo {
+  margin: 0 0 10px 0;
+  color: #333333;
+  font-size: 1rem;
+}
+
+.perfil-card-titulo.con-borde {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 10px;
+}
+
+/* Carnet QR */
+.qr-container {
+  text-align: center;
+}
+
+.qr-img {
+  width: 90px; /* Reducido de 120px */
+  height: 90px; /* Reducido de 120px */
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid #cccccc;
+  padding: 4px;
+}
+
+.qr-texto {
+  margin: 5px 0 0 0;
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+/* Grilla de Métricas Rápidas */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex-grow: 1;
+}
+
+.metrica-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metrica-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.metrica-numero {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1885AC;
+}
+
+.metrica-etiqueta {
+  display: block;
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+/* Información Académica */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 10px;
+  margin-top: 10px;
+}
+
+.info-label {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #888888;
+}
+
+.info-valor {
+  margin: 2px 0 0 0;
+  font-size: 0.9rem;
+  color: #333333;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.info-valor.exito {
+  color: #059669;
+  font-weight: bold;
+}
+
+/* Toggle Switch de Notificaciones */
+.pref-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.pref-titulo {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333333;
+  font-weight: 500;
+}
+
+.pref-desc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 20px;
+  background: #1885AC;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.toggle-knob {
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  transition: right 0.3s ease;
+}
+
+/* Estado inactivo del botón de alertas */
+.toggle-switch.inactivo {
+  background: #cccccc;
+}
+
+.toggle-switch.inactivo .toggle-knob {
+  right: auto;
+  left: 2px;
+}
+
+/* botón volver */
+.btn-volver-perfil {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 5px auto; /* Reducido de 15px a 5px */
+  padding: 0;
+  justify-content: flex-start;
+  background: none;
+  border: none;
+  color: #0056b3;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+}
+
+/* Tarjeta Cabecera del Perfil */
+.perfil-header-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  max-width: 900px;
+  margin: 0 auto 10px auto; /* Margen inferior reducido */
+  padding: 12px 20px; /* Padding vertical reducido */
+}
+
+.perfil-avatar-grande {
+  width: 55px; /* Reducido de 70px */
+  height: 55px; /* Reducido de 70px */
+  border-radius: 50%;
+  background-color: #0056b3;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.perfil-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.perfil-nombre {
+  margin: 0;
+  font-size: 1.2rem; /* Ligeramente más chico */
+  color: #1a202c;
+  font-weight: 700;
+}
+
+.perfil-rol {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.perfil-badge {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 4px 12px;
+  background-color: #e6f4ea;
+  color: #1e8e3e;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.grilla-prestamos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Título de la sección alineado a la grilla */
+.prestamos-titulo-seccion {
+  max-width: 900px;
+  margin: 0 auto 15px auto; /* Se alinea exactamente con la grilla */
+  color: #1a4971;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.prestamo-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  padding: 15px;
+  gap: 15px;
+}
+
+.prestamo-img {
+  width: 80px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #cccccc;
+}
+
+.prestamo-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.prestamo-titulo {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+  color: #1a202c;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prestamo-autor {
+  margin: 0 0 10px 0;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.prestamo-fechas p {
+  margin: 2px 0;
+  font-size: 0.8rem;
+  color: #4a5568;
+}
+
+/* Botón principal de propuesta de donación */
+.btn-donar-propuesta {
+  background-color: #d97706; /* Naranja cálido armónico */
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-block;
+}
+
+.btn-donar-propuesta:hover {
+  background-color: #b45309; /* Tono más oscuro al pasar el cursor */
+}
+
+.btn-donar-propuesta:active {
+  transform: scale(0.98); /* Efecto sutil al hacer clic */
+}
+
+/* ==========================================
+   ESTILOS DE LA SECCIÓN LIBRE DEUDA
+   ========================================== */
+
+/* Contenedor principal ajustado al ancho del sitio */
+#sec-libre-deuda {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Tarjeta contenedora del formulario */
+#form-libre-deuda {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Campos de texto y selección */
+#form-libre-deuda input[type="text"],
+#form-libre-deuda input[type="number"],
+#form-libre-deuda select {
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  color: #333333;
+  background-color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Efecto al hacer foco/clic en los campos */
+#form-libre-deuda input:focus,
+#form-libre-deuda select:focus {
+  outline: none;
+  border-color: #0056b3;
+  box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+}
+
+/* Botón principal de envío */
+#form-libre-deuda button[type="submit"] {
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#form-libre-deuda button[type="submit"]:hover {
+  background-color: #003d82;
+}
+
+#form-libre-deuda button[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+/* Adaptación para pantallas de celular */
+@media (max-width: 600px) {
+  #form-libre-deuda div[style*="display: flex"] {
+    flex-direction: column;
+    gap: 15px !important;
+  }
+}
+
+/* ==========================================
+   ESTILOS DEL FORO DE CONSULTAS
+   ========================================== */
+.foro-item {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.foro-pregunta {
+  margin: 0 0 8px 0;
+  color: #333333;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.foro-autor {
+  font-size: 0.85rem;
+  color: #a0aec0;
+  font-weight: normal;
+}
+
+.foro-respuesta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555555;
+  line-height: 1.5;
+}
+
+/* Respuesta oficial de la biblioteca destacada */
+.foro-respuesta-biblioteca {
+  margin-top: 12px;
+  padding: 10px 15px;
+  background-color: #f0f7ff; /* Azul muy clarito */
+  border-left: 3px solid #0056b3;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.9rem;
+  color: #003d82;
+  line-height: 1.4;
+}
+
+/* Estado temporal para las preguntas recién hechas */
+.foro-estado-pendiente {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #d97706; /* Naranja */
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ==========================================
+   ESTILOS DEL FOOTER COMPACTO Y SUBTIL (NARANJA)
+   ========================================== */
+.main-footer {
+  background-color: #1a202c; /* Gris oscuro discreto */
+  color: #cbd5e0;
+  padding: 20px 15px 12px 15px; /* Súper reducido */
+  margin-top: 30px;
+  border-top: 2px solid #d97706; /* Borde naranja fino */
+  font-size: 0.78rem; /* Tipografía más pequeña */
+  line-height: 1.35;
+}
+
+.footer-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px 20px; /* Reducción de espacio entre columnas */
+}
+
+.footer-col h3 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0 0 2px 0;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.footer-sub {
+  color: #a0aec0;
+  font-size: 0.72rem;
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.footer-col h4 {
+  color: #ffffff;
+  font-size: 0.85rem;
+  margin-top: 0;
+  margin-bottom: 6px;
+  border-bottom: 1.5px solid #d97706; /* Subrayado naranja fino */
+  padding-bottom: 2px;
+  display: inline-block;
+}
+
+.footer-col p {
+  margin: 0 0 5px 0;
+}
+
+.footer-col a {
+  color: #f59e0b; /* Naranja para enlaces */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover {
+  color: #fbbf24;
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  max-width: 900px;
+  margin: 12px auto 0 auto;
+  padding-top: 8px;
+  border-top: 1px solid #2d3748;
+  text-align: center;
+  font-size: 0.70rem;
+  color: #718096;
+}
+
+/* Celulares */
+@media (max-width: 650px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Logo institucional en el footer */
+.footer-logo {
+  max-height: 38px; /* Controla la altura del logo para que quede sutil */
+  width: auto;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ==========================================
+   ESTILOS DE SUGERENCIA DE COMPRA
+   ========================================== */
+#sec-sugerencia {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#form-sugerencia {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-sugerencia-submit {
+  background-color: #EA8824;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-sugerencia-submit:hover {
+  background-color: #b45309;
+}
+
+.btn-sugerencia-submit:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   7. diseño responsivo (celulares)
+   ========================================= */
+@media (max-width: 768px) {
+
+  /* invierte los logos en celular */
+  .logo-completo {
+    display: none !important;
+  }
+
+  .logo-chico {
+    display: block !important;
+    height: 35px;
+    width: auto;
+  }
+
+  .login-container {
+    width: 90%;
+    padding: 25px 20px;
+  }
+
+  .login-logo {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .header-container {
+    position: relative !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  #hamburger-btn {
+    display: block;
+    margin-left: auto;
+  }
+
+  /* muestra el menú desplegable vertical en celular */
+  .nav-list {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  #nav-menu {
+    display: none;
+    position: absolute !important;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    padding: 15px;
+    z-index: 999999 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-top: 3px solid var(--color-primario);
+  }
+
+  /* abre el menú con la clase activa (menu-abierto se suma por compatibilidad con el js) */
+  #nav-menu.activo,
+  #nav-menu.menu-abierto {
+    display: block !important;
+  }
+
+  .dropdown-menu {
+    display: block !important;
+    position: static !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding-left: 20px !important;
+    margin-top: 5px;
+    border: none !important;
+  }
+
+  .nav-item > .nav-link {
+    font-weight: bold;
+    color: var(--color-primario);
+    display: block;
+    padding: 10px 0;
+    border-bottom: 2px solid #f1f5f9;
+    pointer-events: none;
+  }
+
+  /* apila el buscador */
+  .search-box {
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .search-box input,
+  .search-box select,
+  .search-box button {
+    flex: none; /* evita que el flex de escritorio estire los campos en vertical */
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 14px;
+  }
+
+  /* centra las tarjetas de libros */
+  #lista-libros article {
+    flex-direction: column !important;
+    align-items: center;
+    text-align: center;
+  }
+
+  #lista-libros article > div:first-child {
+    flex: none !important;
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .colecciones-grid,
+  #contenedor-favoritos,
+  .grilla-novedades {
+    grid-template-columns: 1fr !important;
+  }
+
+  #libro-azar > div {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .detalle-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .detalle-acciones {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+.colecciones-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   accesibilidad: respeta a quienes reducen las animaciones
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-tema:hover,
+  .tarjeta-novedad:hover,
+  .btn-carrusel:hover,
+  .tarjeta-tema:hover .icono-tema {
+    transform: none;
+  }
+}
+
+/* Transición fluida entre secciones */
+.tab-content {
+  animation: fadeInTab 0.35s ease-in-out;
+}
+
+@keyframes fadeInTab {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Barra superior de carga interactiva */
+#app-loader-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background-color: #EA8824;
+  z-index: 10001;
+  transition: width 0.25s ease;
+}
+
+/* Grilla de trabajos de alumnos */
+.trabajos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.trabajo-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Multimedia en tarjeta de proyecto */
+.trabajo-media-container {
+  width: 100%;
+  height: 160px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.trabajo-media-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.trabajo-media-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+/* Cabecera con ícono institucional para las tarjetas de carrera */
+.coleccion-header-icono {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.carrera-icono-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.coleccion-card:hover .carrera-icono-img {
+  transform: scale(1.08);
+}
+
+.coleccion-header-icono h3 {
+  margin: 0 !important;
+  font-size: 1.1rem;
+  color: #1a202c;
+}
+/* Visor interactivo de documentos PDF */
+.visor-pdf-frame {
+  width: 100%;
+  height: 520px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  display: block;
+}
+
+.tarjeta-media-pdf {
+  width: 100%;
+  height: 160px;
+  background: #fdf2f2;
+  border: 1px dashed #fca5a5;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #b91c1c;
+  margin-bottom: 12px;
+}
+/* Disposición en dos columnas para Libro al Azar + Proyectos de Alumnos */
+.bloque-descubrir-trabajos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  align-items: stretch;
+}
+
+.seccion-mitad {
+  display: flex;
+  flex-direction: column;
+}
+
+.seccion-mitad .tarjeta-destacada {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Tarjeta individual del mini carrusel de trabajos */
+.mini-trabajo-card {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  min-height: 140px;
+}
+
+.mini-trabajo-card:hover {
+  transform: translateX(4px);
+}
+
+.mini-trabajo-thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--color-borde);
+  background-color: #f8fafc;
+}
+
+.mini-trabajo-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+/* Controles de paginación del mini carrusel */
+.mini-carrusel-controles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-mini-carrusel {
+  background: none;
+  border: 1px solid #cbd5e0;
+  color: #1885AC;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-mini-carrusel:hover {
+  background-color: #1885AC;
+  color: white;
+}
+
+/* Adaptación a celulares */
+@media (max-width: 850px) {
+  .bloque-descubrir-trabajos {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+/* Contenedor en dos columnas: Libro al azar + Proyectos de Alumnos */
+.bloque-descubrir-trabajos {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 25px !important;
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+.seccion-mitad {
+  flex: 1 1 50% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.seccion-mitad .tarjeta-destacada {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-height: 190px !important;
+}
+
+/* En celulares se apila automáticamente uno abajo del otro */
+@media (max-width: 850px) {
+  .bloque-descubrir-trabajos {
+    flex-direction: column !important;
+  }
+}
+/* Botones de acción en la ficha del libro */
+.btn-accion-detalle {
+  width: 100%;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #cbd5e0;
+  color: #2c3e50;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-accion-detalle:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-accion-detalle.btn-reserva-activo {
+  background-color: #1885AC;
+  border-color: #1885AC;
+  color: #ffffff;
+}
+
+.btn-accion-detalle.btn-reserva-activo:hover {
+  background-color: #126380;
+}
+
+.icono-btn-accion {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Botones de acción en la ficha del libro */
+.btn-accion-detalle {
+  width: 100%;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #cbd5e0;
+  color: #2c3e50;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-accion-detalle:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-accion-detalle.btn-reserva-activo {
+  background-color: #1885AC;
+  border-color: #1885AC;
+  color: #ffffff;
+}
+
+.btn-accion-detalle.btn-reserva-activo:hover {
+  background-color: #126380;
+}
+
+.icono-btn-accion {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.icono-tema-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+}
+.tarjeta-tema:hover .icono-tema-img {
+  transform: scale(1.1);
+}
+
+.btn-accion-detalle {
+  width: 100%;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #cbd5e0;
+  color: #2c3e50;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.btn-accion-detalle:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-accion-detalle.btn-reserva-activo {
+  background-color: #1885AC !important;
+  border-color: #1885AC !important;
+  color: #ffffff !important;
+}
+
+.btn-accion-detalle.btn-reserva-activo:hover {
+  background-color: #126380 !important;
+}
+
+.icono-btn-accion {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Mostrar los colores originales del icono de reserva */
+#btn-detalle-reservar img {
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+/* =========================================
+   RESPONSIVE MOBILE - PÁGINA DE INICIO
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  /* Apilar las dos tarjetas principales */
+  #secciones-inicio > div:first-child {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+
+  /* Cada tarjeta ocupa el ancho completo */
+  #secciones-inicio > div:first-child > div {
+    width: 100% !important;
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+  }
+
+}
+
+/* =========================================
+   RESPONSIVE - CARRUSEL DE LIBROS
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  #track-carrusel {
+    width: 100% !important;
+    padding: 10px 20px 20px !important;
+    gap: 30px !important;
+  }
+
+  #track-carrusel > div {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #track-carrusel img {
+    max-width: 100% !important;
+  }
+
+}
+
+/* =========================================
+   RESPONSIVE - MENÚ DE NAVEGACIÓN
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  .header-container {
+    padding: 0 16px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  #nav-menu {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    box-sizing: border-box;
+    padding: 15px 20px !important;
+    max-height: calc(100dvh - 60px);
+    overflow-y: auto;
+  }
+
+  .nav-list {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-left: 12px !important;
+  }
+
+  .dropdown-link {
+    font-size: 0.9rem !important;
+    padding: 12px !important;
+    white-space: normal !important;
+  }
+
+}
+
+/* =========================================
+   RESPONSIVE - LOGIN CELULAR
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  .login-screen {
+    padding: 20px 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-container {
+    width: calc(100% - 40px) !important;
+    max-width: 340px !important;
+    max-height: calc(100dvh - 50px);
+    overflow-y: auto;
+    margin: auto;
+    padding: 22px 20px !important;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  .login-logo {
+    display: block;
+    width: 140px !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 auto 12px !important;
+  }
+
+  .login-container h2 {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .login-container p {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  .app-form {
+    gap: 10px;
+  }
+
+}
+
+/* RESPONSIVE - FICHA DEL LIBRO */
+
+@media (max-width: 768px) {
+
+  #sec-detalle,
+  .detalle-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .detalle-container {
+    padding: 16px !important;
+  }
+
+  .detalle-top {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 20px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .detalle-top > div:first-child {
+    flex: none !important;
+    width: 100% !important;
+    text-align: center;
+  }
+
+  .detalle-info,
+  .detalle-acciones,
+  .detalle-existencias {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .detalle-existencias > div {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+}
